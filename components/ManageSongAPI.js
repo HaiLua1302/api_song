@@ -1,5 +1,5 @@
 //npm install axios --save
-import React, {Component} from 'react';
+import React, {Component,useEffect} from 'react';
 import { SearchBar } from 'react-native-elements';
 import axios, { Axios } from 'axios';
 import {
@@ -31,137 +31,152 @@ class SongManagement extends React.Component {
           };
     }
 
-    //Lấy dữ liệu từ server thông qua nodejs
-    dnGet=()=>{
-        var url = 'http:// 192.168.43.76:3001/data';
-        axios.get(url)
-        .then((MySQLData)=>{
-            console.log(MySQLData.data);
-            this.setState({
-                dataSong: MySQLData.data //dữ liệu lấy từ nodejs trả về cho biến dataSong
-            })
+    // //Lấy dữ liệu từ server thông qua nodejs
+    // dnGet=()=>{
+    //     var url = 'https://4356-2402-800-6374-f399-6532-1a8f-bacd-5f91.ap.ngrok.io/data';
+    //     fetch.get(url)
+    //     .then((MySQLData)=>{
+    //         console.log(MySQLData.data);
+    //         this.setState({
+    //             dataSong: MySQLData.data //dữ liệu lấy từ nodejs trả về cho biến dataSong
+    //         })
+    //     })
+    //   };
+      //Lấy dữ liệu từ server thông qua nodejs
+    dnGet=async()=>{
+      var url = 'https://4356-2402-800-6374-f399-6532-1a8f-bacd-5f91.ap.ngrok.io/data';
+      await fetch(url)
+      .then((res)=>{
+          res.json();
+      }).then((res)=>{
+        this.setState({
+          dataSong: res //dữ liệu lấy từ nodejs trả về cho biến dataSong
         })
-      };
-    //Ưu tiên chạy hàm dnGet khi build app
-      componentDidMount(){
-          this.dnGet();
-      };
+      })
+    }
+  
+    // //Ưu tiên chạy hàm dnGet khi build app
+    //   componentDidMount(){
+    //       this.dnGet();
+    //   };
 
-    //Thêm dữ liệu
-    dnInser=()=>{
-      //lấy dữ liệu đang có ở textinput
-      const dataInsert = {
-        id:this.state.inputID,
-        title:this.state.inputTitle,
-        singer:this.state.inputSinger,
-        publication:this.state.inputPubliccation,
-        image:this.state.inputImage
-      };
-      //gửi dữ liệu
-      var url = 'http:// 192.168.43.76:3001/data';
-      axios.post(url,dataInsert).then((response)=>{
-          console.log(response);
-      }).catch((error)=>{
-          console.log(error);
-      });
-      //thông báo
-      Alert.alert(
-        "Thông báo!",
-        "Thêm dữ liệu thành công",
-        [
-          { text: "OK", onPress: () => {
-            this.dnGet();
-            this.clearTextInput();} }
-        ]
-      );  
-    };
+  //   //Thêm dữ liệu
+  //   dnInser=()=>{
+  //     //lấy dữ liệu đang có ở textinput
+  //     const dataInsert = {
+  //       id:this.state.inputID,
+  //       title:this.state.inputTitle,
+  //       singer:this.state.inputSinger,
+  //       publication:this.state.inputPubliccation,
+  //       image:this.state.inputImage
+  //     };
+  //     //gửi dữ liệu
+  //     var url = 'https://4356-2402-800-6374-f399-6532-1a8f-bacd-5f91.ap.ngrok.io/data';
+  //     axios.post(url,dataInsert).then((response)=>{
+  //       //thông báo
+  //       Alert.alert(
+  //         "Thông báo!",
+  //         "Thêm dữ liệu thành công",
+  //         [
+  //           { text: "OK", onPress: () => {
+  //             this.dnGet();
+  //             this.clearTextInput();} }
+  //         ]
+  //       );  
+  //         console.log(response);
+  //     }).catch((error)=>{
+  //         console.log(error);
+  //     });
+      
+  //   };
     
-    //Xoá dữ liệu
-    dnDelete=()=>{
-      //kiểm tra trống ở text input id 
-      if(!this.state.inputID){
-        Alert.alert(
-          "Thông báo!",
-          "Kiểm tra lại trường ID",
-          [
-            { text: "OK", onPress: () => console.log("OK Pressed") }
-          ]
-        );
-    }else{
-      Alert.alert(
-        "Thông báo!",
-        "Xác nhận xoá bài "+this.state.inputTitle+" với id : "+this.state.inputID,
-        [
-          {
-            text: "Huỷ",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel"
-          },
-          { text: "OK", onPress: () => {
-            //lấy id của bài cần xoá gửi cho nodejs
-              const idDelete = {
-                id: this.state.inputID
-               };
-              var url = 'http:// 192.168.43.76:3001/delete';
-              axios.post(url, idDelete)
-                    .then((response)=>{
-                      Alert.alert(
-                        "Thông báo!",
-                        "Xoá thành công !!!",
-                        [
-                          { text: "OK", onPress: () => {
-                            console.log(response);
-                            this.dnGet();
-                            this.clearTextInput();
-                          }}
-                        ]
-                      );         
-                  }).catch((error)=>{
-                      console.log(error);
-                  });              
-            }}
-          ]
-        );
-      }
-    };
+  //   //Xoá dữ liệu
+  //   dnDelete=()=>{
+  //     //kiểm tra trống ở text input id 
+  //     if(!this.state.inputID){
+  //       Alert.alert(
+  //         "Thông báo!",
+  //         "Kiểm tra lại trường ID",
+  //         [
+  //           { text: "OK", onPress: () => console.log("OK Pressed") }
+  //         ]
+  //       );
+  //   }else{
+  //     Alert.alert(
+  //       "Thông báo!",
+  //       "Xác nhận xoá bài "+this.state.inputTitle+" với id : "+this.state.inputID,
+  //       [
+  //         {
+  //           text: "Huỷ",
+  //           onPress: () => console.log("Cancel Pressed"),
+  //           style: "cancel"
+  //         },
+  //         { text: "OK", onPress: () => {
+  //           //lấy id của bài cần xoá gửi cho nodejs
+  //             const idDelete = {
+  //               id: this.state.inputID
+  //              };
+  //             var url = 'https://4356-2402-800-6374-f399-6532-1a8f-bacd-5f91.ap.ngrok.io/delete';
+  //             axios.post(url, idDelete)
+  //                   .then((response)=>{
+  //                     Alert.alert(
+  //                       "Thông báo!",
+  //                       "Xoá thành công !!!",
+  //                       [
+  //                         { text: "OK", onPress: () => {
+  //                           console.log(response);
+  //                           this.dnGet();
+  //                           this.clearTextInput();
+  //                         }}
+  //                       ]
+  //                     );         
+  //                 }).catch((error)=>{
+  //                     console.log(error);
+  //                 });              
+  //           }}
+  //         ]
+  //       );
+  //     }
+  //   };
     
-    //Sửa dữ liệu
-    dnUpdate=()=>{
-      if(!this.state.inputID){
-        Alert.alert(
-          "Thông báo!",
-          "Kiểm tra lại trường ID",
-          [
-            { text: "OK", onPress: () => console.log("OK Pressed") }
-          ]
-        );
-      }else{
-      //lấy dữ liệu cần update đang có ở textinput
-      const dataUpdate = {
-        id:this.state.inputID,
-        title:this.state.inputTitle,
-        singer:this.state.inputSinger,
-        publication:this.state.inputPubliccation,
-        image:this.state.inputImage
-      };
-      var url = 'http:// 192.168.43.76:3001/update';
-        axios.post(url,dataUpdate).then((response)=>{
-            console.log(response);
+  //   //Sửa dữ liệu
+  //   dnUpdate=()=>{
+  //     if(!this.state.inputID){
+  //       Alert.alert(
+  //         "Thông báo!",
+  //         "Kiểm tra lại trường ID",
+  //         [
+  //           { text: "OK", onPress: () => console.log("OK Pressed") }
+  //         ]
+  //       );
+  //     }else{
+  //     //lấy dữ liệu cần update đang có ở textinput
+  //     const dataUpdate = {
+  //       id:this.state.inputID,
+  //       title:this.state.inputTitle,
+  //       singer:this.state.inputSinger,
+  //       publication:this.state.inputPubliccation,
+  //       image:this.state.inputImage
+  //     };
+  //     var url = 'https://4356-2402-800-6374-f399-6532-1a8f-bacd-5f91.ap.ngrok.io/update';
+  //       axios.post(url,dataUpdate).then((response)=>{
+  //         Alert.alert(
+  //           "Thông báo!",
+  //           "Cập nhật thành công !",
+  //           [
+  //             { text: "OK", onPress: () => {
+  //               this.dnGet();
+  //               console.log("OK Pressed")} }
+  //           ]
+  //         ); 
+  //           console.log(response);
           
-        }).catch((error)=>{
-            console.log(error);
-        });
-        Alert.alert(
-          "Thông báo!",
-          "Cập nhật thành công !",
-          [
-            { text: "OK", onPress: () => {
-              this.dnGet();
-              console.log("OK Pressed")} }
-          ]
-        );    
-      };    
-  };
+  //       }).catch((error)=>{
+  //           console.log(error);
+  //       });
+           
+  //     };    
+  // };
 
   // Xoá dữ liệu đang hiển thị ở TextInput
     clearTextInput = () => {
@@ -238,7 +253,7 @@ class SongManagement extends React.Component {
       </View>
 
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-        <View style={styles.buttonContainer}>
+        {/* <View style={styles.buttonContainer}>
           <Button title="Thêm" onPress={this.dnInser.bind(this)} color="#003366" />
         </View>
 
@@ -248,14 +263,14 @@ class SongManagement extends React.Component {
 
         <View style={styles.buttonContainer}>
           <Button title="Sửa" onPress={this.dnUpdate.bind(this)} color="#ff80ed" />
-        </View>
+        </View> */}
 
         <View style={styles.buttonContainer}>
           <Button title="Mới" onPress={this.clearTextInput} color="#ff16ed" />
         </View>
         </View> 
     
-        <FlatList
+        {/* <FlatList
           data={this.state.filteredData && 
             this.state.filteredData.length > 0 ? this.state.filteredData : this.state.dataSong}
           ItemSeparatorComponent = {this.FlatListItemSeparator}
@@ -271,6 +286,26 @@ class SongManagement extends React.Component {
                     inputSinger: item.singer,
                     inputPubliccation: item.publication,
                     inputImage: item.image,
+                  };
+                });
+              }}>
+              <SongShow item={item} />
+            </TouchableOpacity>
+        )}></FlatList> */}
+        <FlatList
+          data={this.state.filteredData && 
+            this.state.filteredData.length > 0 ? this.state.filteredData : this.state.dataSong}
+          keyExtractor={(item, index) => item.id.toString() + index.toString()} 
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => {
+                this.setState(() => {
+                  return {
+                    id: item.id.toString(),
+                    title: item.title,
+                    singer: item.singer,
+                    publication: item.publication,
+                    image: item.image,
                   };
                 });
               }}>
